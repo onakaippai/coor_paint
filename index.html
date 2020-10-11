@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>
+[image size]
+width: <input type="text" id= "image_width" size="5" value="256">
+height:<input type="text" id="image_height" size="5" value="256">
+</p>
+
+<p>
+[background]
+R:<input type="text" id="background_R" size="5" value="255">
+G:<input type="text" id="background_G" size="5" value="255">
+B:<input type="text" id="background_B" size="5" value="255">
+A:<input type="text" id="background_A" size="5" value="0">
+</p>
+
+<button onclick="generate()">generate</button>
+<p><p>
+<canvas id="canvas" width="256" height="256" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+<script>
+function generate() {
+  var image_width  = document.getElementById( "image_width").value;
+  var image_height = document.getElementById("image_height").value;
+  var background_R = document.getElementById("background_R").value;
+  var background_G = document.getElementById("background_G").value;
+  var background_B = document.getElementById("background_B").value;
+  var background_A = document.getElementById("background_A").value;
+  canvas.width  = image_width;
+  canvas.height = image_height;
+  canvas.style.backgroundColor =
+  'rgba('+background_R+","+background_G+","+background_B+","+background_A+")";
+}
+</script>
+</body>
+</html>
