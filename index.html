@@ -7,9 +7,9 @@ image setting
 <p>
 [image size]
   <label for="image_width">width:</label>
-  <input type="text" id= "image_width" size="5" value="256">
+  <input type="text" id= "image_width" size="5" value="100">
   <label for="image_height">height:</label>
-  <input type="text" id="image_height" size="5" value="256">
+  <input type="text" id="image_height" size="5" value="100">
 </p>
 
 <p>
@@ -22,6 +22,19 @@ image setting
 
 <button onclick="generate()">generate</button>
 
+<h1>
+view setting
+</h1>
+<p>
+  <label for="zoom">[zoom]</label>
+  <input type="text" id= "zoom" size="5" value="100" onchange="view()">% &nbsp;&nbsp;&nbsp;  
+  <label for="position_info">[position_info]</label>
+  <select name="position_info" id="position_info" value="1" onchange="view()">
+    <option value="1">on</option>
+    <option value="0">off</option>
+  </select>
+</p>
+    
 <h1>
 graphic
 </h1>
@@ -63,13 +76,27 @@ function graphic_type()
 }
 </script>
 
-
+<p><p>
+<h1>
+view
+</h1>
+<canvas id="view_canvas" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+<script>
+function view() { 
+  var zoom           = document.getElementById(        "zoom").value;
+  view_canvas.width  = final_image.width *zoom/100;
+  view_canvas.height = final_image.height*zoom/100;
+  var c   = document.getElementById("view_canvas");
+  var ctx = c.getContext("2d");
+  ctx.scale(zoom/100, zoom/100);
+}
+</script>
 
 <p><p>
 <h1>
-image
+final image
 </h1>
-<canvas id="canvas" width="256" height="256" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+<canvas id="final_image" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
 <script>
 function generate() {
   var image_width  = document.getElementById( "image_width").value;
@@ -77,11 +104,22 @@ function generate() {
   var background_R = document.getElementById("background_R").value;
   var background_G = document.getElementById("background_G").value;
   var background_B = document.getElementById("background_B").value;
-  var background_A = document.getElementById("background_A").value;
-  canvas.width  = image_width;
-  canvas.height = image_height;
-  canvas.style.backgroundColor =
+  var background_A = document.getElementById("background_A").value;  
+  var zoom         = document.getElementById(        "zoom").value;
+  
+  final_image.width  = image_width;
+  final_image.height = image_height;
+  final_image.style.backgroundColor =
+  'rgba('+background_R+","+background_G+","+background_B+","+background_A+")";;
+  
+  view_canvas.width  = image_width *zoom/100;
+  view_canvas.height = image_height*zoom/100;
+  view_canvas.style.backgroundColor =
   'rgba('+background_R+","+background_G+","+background_B+","+background_A+")";
+  var c   = document.getElementById("view_canvas");
+  var ctx = c.getContext("2d");
+  ctx.scale(zoom/100, zoom/100);
+
 }
 </script>
 </body>
