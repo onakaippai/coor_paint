@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html>
+<style>
+  .container
+  {
+  }
+  .container textarea
+  {
+      vertical-align: top;
+  }
+  .container bottom
+  {
+      vertical-align: top;
+  }
+  .container canvas
+  {
+      vertical-align: top;
+  }
+</style>
 <body>
+
 <h1>
 image setting
 </h1>
 <p>
-[image size]
+  [image size]
   <label for="image_width">width:</label>
   <input type="text" id= "image_width" size="5" value="100">
   <label for="image_height">height:</label>
   <input type="text" id="image_height" size="5" value="100">
-</p>
-
-<p>
-[background]
+  &nbsp;&nbsp;&nbsp;
+  [background]
   R:<input type="text" id="background_R" size="5" value="255">
   G:<input type="text" id="background_G" size="5" value="255">
   B:<input type="text" id="background_B" size="5" value="255">
   A:<input type="text" id="background_A" size="5" value="0">
 </p>
-
 <button onclick="generate()">generate</button>
 
 <h1>
@@ -36,68 +51,58 @@ view setting
 </p>
     
 <h1>
-graphic
-</h1>
-
-<label for="graphic_type">[graphic type]</label>
-<select name="graphic_type" id="graphic_type" value="0" onchange="graphic_type()">
-  <option value="0"></option>
-  <option value="1">path</option>
-  <option value="2">rectangle</option>
-  <option value="3">circle</option>
-  <option value="4">text</option>
-</select>
-
-<div id="graphic_params"></div>
-
-<script>
-function graphic_type()
-{
-  var graphic_params = document.getElementById("graphic_params");
-  var graphic_type   = document.getElementById(  "graphic_type").value;  
-  graphic_params.innerHTML = '';
-  if       (graphic_type == 1){
-    var element = document.createElement("p");
-    element.innerHTML = "[path_params]"
-    graphic_params.appendChild(element)
-  }else if (graphic_type == 2){    
-    var element = document.createElement("p");
-    element.innerHTML = "[rectangle_params]"
-    graphic_params.appendChild(element)
-  }else if (graphic_type == 3){    
-    var element = document.createElement("p");
-    element.innerHTML = "[circle_params]"
-    graphic_params.appendChild(element)
-  }else if (graphic_type == 4){    
-    var element = document.createElement("p");
-    element.innerHTML = "[text_params]"
-    graphic_params.appendChild(element)
-  }
-}
-</script>
-
-<p><p>
-<h1>
+current svg code
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 view
 </h1>
+<div class=container>
+<textarea id="current_code" name="current_code" rows="10" cols="40">
+</textarea>
+&nbsp;&nbsp;
 <canvas id="view_canvas" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+<br><br>
+<button onclick="view()">draw</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="view()">keep</button>
+</div>
+
+<h1>
+total svg code
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+final image
+</h1>
+<div class=container>
+<textarea id="total_code" name="total_code" rows="10" cols="40">
+</textarea>
+&nbsp;&nbsp;
+<canvas id="final_image" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+<br><br>
+<button onclick="update_image()">update image</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="save_code()">save code as txt</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="save_image()">save image</button>
+</div>
+
 <script>
 function view() { 
-  var zoom           = document.getElementById(        "zoom").value;
+  var zoom         = document.getElementById(        "zoom").value;
   view_canvas.width  = final_image.width *zoom/100;
   view_canvas.height = final_image.height*zoom/100;
-  var c   = document.getElementById("view_canvas");
+  var c = document.getElementById("view_canvas");
   var ctx = c.getContext("2d");
   ctx.scale(zoom/100, zoom/100);
 }
-</script>
 
-<p><p>
-<h1>
-final image
-</h1>
-<canvas id="final_image" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
-<script>
 function generate() {
   var image_width  = document.getElementById( "image_width").value;
   var image_height = document.getElementById("image_height").value;
@@ -116,7 +121,7 @@ function generate() {
   view_canvas.height = image_height*zoom/100;
   view_canvas.style.backgroundColor =
   'rgba('+background_R+","+background_G+","+background_B+","+background_A+")";
-  var c   = document.getElementById("view_canvas");
+  var c = document.getElementById("view_canvas");
   var ctx = c.getContext("2d");
   ctx.scale(zoom/100, zoom/100);
 
