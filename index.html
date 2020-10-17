@@ -70,7 +70,7 @@ view
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<button onclick="view()">keep</button>
+<button onclick="merge_code()">keep</button>
 </div>
 
 <h1>
@@ -94,13 +94,28 @@ final image
 </div>
 
 <script>
+function drawInlineSVG(ctx, rawSVG, callback) {
+    var svg = new Blob([rawSVG], {type:"image/svg+xml;charset=utf-8"}),
+        domURL = self.URL || self.webkitURL || self,
+        url = domURL.createObjectURL(svg),
+        img = new Image;
+	
+    img.onload = function () {
+        ctx.drawImage(this, 0, 0);     
+        domURL.revokeObjectURL(url);
+        callback(this);
+    };
+    img.src = url;
+}
+
 function view() { 
   var zoom         = document.getElementById(        "zoom").value;
   view_canvas.width  = final_image.width *zoom/100;
   view_canvas.height = final_image.height*zoom/100;
-  var c = document.getElementById("view_canvas");
+  var c   = document.getElementById("view_canvas");
   var ctx = c.getContext("2d");
-  ctx.scale(zoom/100, zoom/100);
+  ctx.scale(zoom/100, zoom/100);  
+  drawInlineSVG(ctx, document.getElementById("current_code").value, function(){});
 }
 
 function generate() {
