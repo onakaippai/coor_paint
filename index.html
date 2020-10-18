@@ -58,6 +58,8 @@ view
 </h1>
 <div class=container>
 <textarea id="current_code" name="current_code" rows="10" cols="40">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+</svg>
 </textarea>
 &nbsp;&nbsp;
 <canvas id="view_canvas" width="100" height="100" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
@@ -72,6 +74,10 @@ view
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <button onclick="merge_code()">keep</button>
 </div>
+
+
+<p id="demo"></p>
+
 
 <h1>
 total svg code
@@ -105,17 +111,28 @@ function drawInlineSVG(ctx, rawSVG, callback) {
         domURL.revokeObjectURL(url);
         callback(this);
     };
+    
     img.src = url;
 }
 
 function view() { 
-  var zoom         = document.getElementById(        "zoom").value;
+  var zoom           = document.getElementById("zoom").value;
   view_canvas.width  = final_image.width *zoom/100;
   view_canvas.height = final_image.height*zoom/100;
   var c   = document.getElementById("view_canvas");
   var ctx = c.getContext("2d");
   ctx.scale(zoom/100, zoom/100);  
   drawInlineSVG(ctx, document.getElementById("current_code").value, function(){});
+  
+  parser = new DOMParser();
+  xmlDoc = parser.parseFromString(document.getElementById("current_code").value,"image/svg+xml");
+  var x, i, txt;
+  txt = "";
+  x   = xmlDoc.getElementsByTagName('path');
+  for (i = 0; i < x.length; i++) { 
+    txt += x[i].getAttribute('d') + "<br>";
+  }
+  document.getElementById("demo").innerHTML = txt; 
 }
 
 function generate() {
