@@ -111,7 +111,6 @@ function drawInlineSVG(ctx, rawSVG, callback) {
         domURL.revokeObjectURL(url);
         callback(this);
     };
-    
     img.src = url;
 }
 
@@ -124,15 +123,46 @@ function view() {
   ctx.scale(zoom/100, zoom/100);  
   drawInlineSVG(ctx, document.getElementById("current_code").value, function(){});
   
-  parser = new DOMParser();
-  xmlDoc = parser.parseFromString(document.getElementById("current_code").value,"image/svg+xml");
-  var x, i, txt;
-  txt = "";
-  x   = xmlDoc.getElementsByTagName('path');
-  for (i = 0; i < x.length; i++) { 
-    txt += x[i].getAttribute('d') + "<br>";
+  if (document.getElementById("position_info").value == 1){
+    parser = new DOMParser();
+    xmlDoc = parser.parseFromString(document.getElementById("current_code").value,"image/svg+xml");
+    var path, command, type, info, x, y, i, j;
+    var cmdRegEx = /([MLQTCSAZVH])([^MLQTCSAZVH]*)/gi;
+    path = xmlDoc.getElementsByTagName('path');
+    for (i = 0; i < path.length; i++) {
+      command = path[i].getAttribute('d').match(cmdRegEx);
+      for (j = 0; j < command.length; j++){
+      	  type = command[j][0].toUpperCase()
+          info = command[j].substring(1,command[j].length).split(/(?:,| )+/) ;
+          switch(type){
+              case 'A':
+              break;
+              case 'C':
+              break;
+              case 'H':
+              case 'V':
+              break;
+              case 'L':
+              case 'M':
+              case 'T':
+                  x = parseInt(info[0]);
+                  y = parseInt(info[1]);
+                  ctx.beginPath();
+                  ctx.arc(x, y, 2*zoom/100, 0, 2 * Math.PI);
+                  ctx.fillStyle = "red";
+                  ctx.fill();
+                  ctx.font = String(12*zoom/100)+"px Arial";
+                  ctx.fillText("("+info[0]+","+info[1]+")", x-6*zoom/100, y-6*zoom/100);
+                  ctx.fillStyle = "red";
+                  ctx.fill();
+              break;
+              case 'Q':
+              case 'S':
+          }
+      }
+    }
   }
-  document.getElementById("demo").innerHTML = txt; 
+  
 }
 
 function generate() {
