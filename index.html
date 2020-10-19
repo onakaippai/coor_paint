@@ -139,45 +139,45 @@ function extract_coor(ctx, zoom){
       switch(type.toUpperCase()){
         case 'A':
           if (type=='a'){
-            x += ParseFloat(info[4]);
-            y += ParseFloat(info[5]);
+            x += parseFloat(info[4]);
+            y += parseFloat(info[5]);
           }
           else{
-            x = ParseFloat(info[4]);
-            y = ParseFloat(info[5]);
+            x = parseFloat(info[4]);
+            y = parseFloat(info[5]);
           }                    
           show_position(ctx, zoom, "blue", x, y);
           break;
         case 'C':
           if (type=='c'){
-            show_position(ctx, zoom, "blue", x+ParseFloat(info[0]), y+ParseFloat(info[1]));
-            show_position(ctx, zoom, "blue", x+ParseFloat(info[2]), y+ParseFloat(info[3]));
-            x += ParseFloat(info[4]);
-            y += ParseFloat(info[5]);
+            show_position(ctx, zoom, "blue", x+parseFloat(info[0]), y+parseFloat(info[1]));
+            show_position(ctx, zoom, "blue", x+parseFloat(info[2]), y+parseFloat(info[3]));
+            x += parseFloat(info[4]);
+            y += parseFloat(info[5]);
           }
           else{
-            show_position(ctx, zoom, "blue", ParseFloat(info[0]), ParseFloat(info[1]));
-            show_position(ctx, zoom, "blue", ParseFloat(info[2]), ParseFloat(info[3]));
-            x = ParseFloat(info[4]);
-            y = ParseFloat(info[5]);
+            show_position(ctx, zoom, "blue", parseFloat(info[0]), parseFloat(info[1]));
+            show_position(ctx, zoom, "blue", parseFloat(info[2]), parseFloat(info[3]));
+            x = parseFloat(info[4]);
+            y = parseFloat(info[5]);
           }                  
           show_position(ctx, zoom, "red", x, y);
           break;
         case 'H':
           if (type=='H'){
-            x += ParseFloat(info[0]);
+            x += parseFloat(info[0]);
           }
           else{
-            x = ParseFloat(info[0]);
+            x = parseFloat(info[0]);
           }              	  
           show_position(ctx, zoom, "red", x, y);
           break;
         case 'V':
           if (type=='V'){
-            y += ParseFloat(info[0]);
+            y += parseFloat(info[0]);
           }
           else{
-            y = ParseFloat(info[0]);
+            y = parseFloat(info[0]);
           }
           show_position(ctx, zoom, "red", x, y);
           break;
@@ -185,26 +185,26 @@ function extract_coor(ctx, zoom){
         case 'M':
         case 'T':
           if ("lmt".match(type)){
-            x += ParseFloat(info[0]);
-            y += ParseFloat(info[1]);
+            x += parseFloat(info[0]);
+            y += parseFloat(info[1]);
           }
           else{
-            x = ParseFloat(info[0]);
-            y = ParseFloat(info[1]);
+            x = parseFloat(info[0]);
+            y = parseFloat(info[1]);
           } 
           show_position(ctx, zoom, "red", x, y);
           break;
         case 'Q':
         case 'S':
           if ("qs".match(type)){
-            show_position(ctx, zoom, "blue", x+ParseFloat(info[0]), y+ParseFloat(info[1]));
-            x += ParseFloat(info[2]);
-            y += ParseFloat(info[3]);
+            show_position(ctx, zoom, "blue", x+parseFloat(info[0]), y+parseFloat(info[1]));
+            x += parseFloat(info[2]);
+            y += parseFloat(info[3]);
           }
           else{
-            show_position(ctx, zoom, "blue", ParseFloat(info[0]), ParseFloat(info[1]));
-            x = ParseFloat(info[2]);
-            y = ParseFloat(info[3]);
+            show_position(ctx, zoom, "blue", parseFloat(info[0]), parseFloat(info[1]));
+            x = parseFloat(info[2]);
+            y = parseFloat(info[3]);
           } 
           show_position(ctx, zoom, "red", x, y);
       }      
