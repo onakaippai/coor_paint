@@ -25,9 +25,9 @@ image setting
 <p>
   [image size]
   <label for="image_width">width:</label>
-  <input type="text" id= "image_width" size="5" value="100">
+  <input type="text" id= "image_width" size="5" value="500">
   <label for="image_height">height:</label>
-  <input type="text" id="image_height" size="5" value="100">
+  <input type="text" id="image_height" size="5" value="500">
   &nbsp;&nbsp;&nbsp;
   [background]
   R:<input type="text" id="background_R" size="5" value="255">
@@ -100,18 +100,116 @@ final image
 </div>
 
 <script>
-function drawInlineSVG(ctx, rawSVG, callback) {
+function drawInlineSVG(ctx, rawSVG) {
     var svg = new Blob([rawSVG], {type:"image/svg+xml;charset=utf-8"}),
         domURL = self.URL || self.webkitURL || self,
         url = domURL.createObjectURL(svg),
         img = new Image;
 	
     img.onload = function () {
-        ctx.drawImage(this, 0, 0);     
-        domURL.revokeObjectURL(url);
-        callback(this);
+        ctx.drawImage(img, 0, 0);
     };
     img.src = url;
+}
+
+function show_position(ctx, zoom, color, x, y) {
+	ctx.beginPath();
+    ctx.arc(x, y, 2*100/zoom, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.font = String(12*100/zoom)+"px Arial";
+    ctx.fillText("("+String(x)+","+String(y)+")", x-6*100/zoom, y-6*100/zoom);
+}
+
+function extract_coor(ctx, zoom){
+  parser = new DOMParser();
+  xmlDoc = parser.parseFromString(document.getElementById("current_code").value,"image/svg+xml");
+  var path, command, type, info, x, y, i, j;
+  var cmdRegEx = /([MLQTCSAZVH])([^MLQTCSAZVH]*)/gi;
+  path = xmlDoc.getElementsByTagName('path');
+  for (i = 0; i < path.length; i++) {
+    command = path[i].getAttribute('d').match(cmdRegEx);
+    x = 0;
+    y = 0;
+    for (j = 0; j < command.length; j++){
+      type = command[j][0]
+      info = command[j].substring(1,command[j].length).trim().split(/(?:,| )+/) ;
+      // control points: "blue"
+      // end points: "red"
+      switch(type.toUpperCase()){
+        case 'A':
+          if (type=='a'){
+            x += ParseFloat(info[4]);
+            y += ParseFloat(info[5]);
+          }
+          else{
+            x = ParseFloat(info[4]);
+            y = ParseFloat(info[5]);
+          }                    
+          show_position(ctx, zoom, "blue", x, y);
+          break;
+        case 'C':
+          if (type=='c'){
+            show_position(ctx, zoom, "blue", x+ParseFloat(info[0]), y+ParseFloat(info[1]));
+            show_position(ctx, zoom, "blue", x+ParseFloat(info[2]), y+ParseFloat(info[3]));
+            x += ParseFloat(info[4]);
+            y += ParseFloat(info[5]);
+          }
+          else{
+            show_position(ctx, zoom, "blue", ParseFloat(info[0]), ParseFloat(info[1]));
+            show_position(ctx, zoom, "blue", ParseFloat(info[2]), ParseFloat(info[3]));
+            x = ParseFloat(info[4]);
+            y = ParseFloat(info[5]);
+          }                  
+          show_position(ctx, zoom, "red", x, y);
+          break;
+        case 'H':
+          if (type=='H'){
+            x += ParseFloat(info[0]);
+          }
+          else{
+            x = ParseFloat(info[0]);
+          }              	  
+          show_position(ctx, zoom, "red", x, y);
+          break;
+        case 'V':
+          if (type=='V'){
+            y += ParseFloat(info[0]);
+          }
+          else{
+            y = ParseFloat(info[0]);
+          }
+          show_position(ctx, zoom, "red", x, y);
+          break;
+        case 'L':
+        case 'M':
+        case 'T':
+          if ("lmt".match(type)){
+            x += ParseFloat(info[0]);
+            y += ParseFloat(info[1]);
+          }
+          else{
+            x = ParseFloat(info[0]);
+            y = ParseFloat(info[1]);
+          } 
+          show_position(ctx, zoom, "red", x, y);
+          break;
+        case 'Q':
+        case 'S':
+          if ("qs".match(type)){
+            show_position(ctx, zoom, "blue", x+ParseFloat(info[0]), y+ParseFloat(info[1]));
+            x += ParseFloat(info[2]);
+            y += ParseFloat(info[3]);
+          }
+          else{
+            show_position(ctx, zoom, "blue", ParseFloat(info[0]), ParseFloat(info[1]));
+            x = ParseFloat(info[2]);
+            y = ParseFloat(info[3]);
+          } 
+          show_position(ctx, zoom, "red", x, y);
+      }      
+    }
+  }
 }
 
 function view() { 
@@ -121,46 +219,10 @@ function view() {
   var c   = document.getElementById("view_canvas");
   var ctx = c.getContext("2d");
   ctx.scale(zoom/100, zoom/100);  
-  drawInlineSVG(ctx, document.getElementById("current_code").value, function(){});
+  drawInlineSVG(ctx, document.getElementById("current_code").value);
   
   if (document.getElementById("position_info").value == 1){
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(document.getElementById("current_code").value,"image/svg+xml");
-    var path, command, type, info, x, y, i, j;
-    var cmdRegEx = /([MLQTCSAZVH])([^MLQTCSAZVH]*)/gi;
-    path = xmlDoc.getElementsByTagName('path');
-    for (i = 0; i < path.length; i++) {
-      command = path[i].getAttribute('d').match(cmdRegEx);
-      for (j = 0; j < command.length; j++){
-      	  type = command[j][0].toUpperCase()
-          info = command[j].substring(1,command[j].length).split(/(?:,| )+/) ;
-          switch(type){
-              case 'A':
-              break;
-              case 'C':
-              break;
-              case 'H':
-              case 'V':
-              break;
-              case 'L':
-              case 'M':
-              case 'T':
-                  x = parseInt(info[0]);
-                  y = parseInt(info[1]);
-                  ctx.beginPath();
-                  ctx.arc(x, y, 2*zoom/100, 0, 2 * Math.PI);
-                  ctx.fillStyle = "red";
-                  ctx.fill();
-                  ctx.font = String(12*zoom/100)+"px Arial";
-                  ctx.fillText("("+info[0]+","+info[1]+")", x-6*zoom/100, y-6*zoom/100);
-                  ctx.fillStyle = "red";
-                  ctx.fill();
-              break;
-              case 'Q':
-              case 'S':
-          }
-      }
-    }
+    extract_coor(ctx, zoom);
   }
   
 }
