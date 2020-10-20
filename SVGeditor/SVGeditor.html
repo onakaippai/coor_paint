@@ -5,40 +5,36 @@
 	<meta http-equiv="Pragma" content="no-cache">
 	<meta http-equiv="Cache-Control" content="no-cache, no-store, private">
 	<link rel="stylesheet" href="./SVGeditor.css">
+	<script type="text/javascript" src="SVGeditor.js"></script>
 	<title>SVG code editor</title>
-	<script type="text/javascript">
-	</script>
 </head>
-<body onload="PreLoad()">
+<body spellcheck="false" onload="PreLoad()">
 <main>
 	<section>
-		<h1>Graphic Viewer</h1>
-		<ul>
-			<li>SVG resolution:
-				<code contenteditable="true">400</code> *
-				<code contenteditable="true">400</code></li>
-			<li>Canvas zoom &blank;:
-				<code contenteditable="true">100</code> %</li>
-			<li>Setup!</li>
-		</ul>
-		<ul>
-			<li>Canvas</li>
-			<li>Original SVG</li>
-		</ul>
-		<p>
-			<canvas></canvas>
-			<svg xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
-		</p>
-	</section>
-	<section>
 		<h1>Code Viewer</h1>
-		<ul>
+		<ul id="CdeTab">
 			<li>Current path</li>
 			<li>Total code</li>
 			<li>Draw!</li>
 		</ul>
-		<pre contenteditable="true"></pre>
-		<pre contenteditable="true"></pre>
+		<pre id="CurPth" contenteditable="true"></pre>
+		<pre id="TtlCde" contenteditable="true"></pre>
+	</section>
+	<section>
+		<h1>Graphic Viewer</h1>
+		<ul id="GrfTab">
+			<li>Resolution
+				<code contenteditable="true">400</code>*<code contenteditable="true">400</code></li>
+			<li>zoom
+				<code contenteditable="true">100</code>%</li>
+			<li>Canvas</li>
+			<li>SVG</li>
+			<li>Setup!</li>
+		</ul>
+		<p>
+			<canvas id="CurCnv"></canvas>
+			<svg id="TtlSvg" xmlns="http://www.w3.org/2000/svg" version="1.1"></svg>
+		</p>
 	</section>
 </main>
 </body>
