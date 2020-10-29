@@ -17,7 +17,7 @@ main {
 }
 
 section:first-child {
-	width: calc(50% - 1px);
+	width: calc(47% - 1px);
 	border-color: Gainsboro;
 	border-style: none solid none none;
 	border-width: 0 1px 0 0;
@@ -25,7 +25,7 @@ section:first-child {
 }
 
 section:last-child {
-	width: calc(50% - 1px);
+	width: calc(53% - 1px);
 	border-color: Gainsboro;
 	border-style: none none none solid;
 	border-width: 0 0 0 1px;
@@ -57,7 +57,7 @@ li {
 	background-color: Gainsboro;
 	height: calc(100% - 0.05rem - 4px);
 	line-height: 1.1rem;
-	font-size: 1rem;
+	font-size: 0.95rem;
 	margin: 0;
 	padding: 0.05rem 0 0 0;
 	cursor: default;
@@ -67,20 +67,21 @@ li {
 }
 
 section:first-child li {
-	width: calc(33% - 2px);
+	width: calc(25% - 2px);
 }
 
 section:last-child li:first-child {
-	width: calc(33% - 2px);
+	width: calc(25% - 2px);
 }
 
 section:last-child li {
-	width: calc(16% - 2px);
+	width: calc(15.8% - 2px);
 }
 
-li > code {
+li > input {
 	display: inline-block;
-	width: 1.5rem;
+	width: 2.0rem;
+    height: 50%;
 	background-color: white;
 }
 
@@ -106,13 +107,13 @@ canvas {
 	margin-top: 40;
 	margin-left: auto;
 	margin-right: auto;
-	border: 2px solid red;
+	border: 1px solid #d3d3d3;
 }
 
 svg {
 	margin-left: auto;
 	margin-right: auto;
-	border: 2px solid red;
+	border: 1px solid #d3d3d3;
 }
 
 [contenteditable] {
