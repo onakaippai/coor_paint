@@ -11,7 +11,7 @@ function getCaretCharacterOffsetWithin(element) {
             preCaretRange.selectNodeContents(element);
             preCaretRange.setEnd(range.endContainer, range.endOffset);
             caretOffset = preCaretRange.toString().length;
-            console.log(preCaretRange.toString().split(''))
+            console.log(preCaretRange.toString().split(''));
         }
     } else if ((sel = doc.selection) && sel.type != "Control") {
         var textRange = sel.createRange();
@@ -81,8 +81,6 @@ function FormatCode(Info, Code){
     var params = Info.params;
     var FormattedCode = Code;
     var i, j, x, y, Flag=true;
-    Code = Code.replace(/\n\n/gi, '<div><br></div>');
-    if (Code.includes('\n')) Code = Code.replace('\n', '<div>').replace('\n', '</div><div>')+'</div>';
     if (type.length==0){
         FormattedCode = "<span style=\"background-color:red;\">"+Code+"</span>";        
         //FormattedCode = Code;

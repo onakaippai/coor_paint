@@ -51,8 +51,7 @@ function CurPthChange(CdeEdt){
     tmp      = FormatCode(Info, CdeEdt.innerText);
     Coor     = tmp.Coor;
     CdeEdt.innerHTML = tmp.FormattedCode;
-    setCaretPosition(CdeEdt, Position);    
-    console.log(CdeEdt.innerHTML);
+    setCaretPosition(CdeEdt, Position);  
 }
 function PreLoad(){
 	CdeTabObj = document.getElementById("CdeTab");
@@ -76,6 +75,20 @@ function PreLoad(){
 	CurPthObj.addEventListener("input", function(){
 		CurPthChange(CurPthObj);
 	}, false);
+    CurPthObj.addEventListener('keydown', function(e){
+        if (e.keyCode == 13 && e.shiftKey==false) {
+            e.preventDefault(); 
+            document.execCommand("insertLineBreak");    
+        } 
+    }, false);
+    CurPthObj.addEventListener("paste", function(e) {
+        // cancel paste
+        e.preventDefault();
+        // get text representation of clipboard
+        var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+        // insert text manually
+        document.execCommand("insertHTML", false, text);
+});
 	//CdeTabObj.children[2].addEventListener("click", DrawClk, false);    
 	//CdeTabObj.children[3].addEventListener("click", KeepClk, false);
     GrfTabObj.children[4].addEventListener("click", SetupClk, false);
