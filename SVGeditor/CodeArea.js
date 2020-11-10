@@ -66,7 +66,7 @@ function ExtractInfo(Code){
     if (command != null){
         for (i = 0; i < command.length; i++){
             type.push(command[i][0]);
-            tmp = command[i].substring(1,command[i].length).split(/([ , \n])/);
+            tmp = command[i].split(/([ , \n])/);
             tmp = tmp.filter(val => val !== ""); 
             text.push([]);
             text[i] =text[i].concat(tmp);
@@ -78,30 +78,27 @@ function ExtractInfo(Code){
     }
     return{type, text, params};
 }
-function FormatCode(Info, Code){    
-    console.log(Code);
+function FormatCode(Info, Code){
     var type   = Info.type;
     var text   = Info.text;
     var params = Info.params;
     var FormattedCode = "";
-    var i, j, cnt, hint, plen, tlen;
+    var i, j, cnt, hint, plen, tlen, hlen;
     var x0 = 0;
     var y0 = 0;
     var x = [];
     var y = [];
     var Flag=true;
+    var tmp = "";
     if (type.length==0){
         FormattedCode = "<span class=\"error\">"+Code+"</span>";
-        console.log(111);
-        console.log(FormattedCode);
     }
     else if (Code.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ' ')[0].toUpperCase()!='M'){        
         FormattedCode = "<span class=\"error\">"+Code+"</span>";
-        console.log(222);
-        console.log(FormattedCode);
     }
     else{
-        for(i = 0;  i < type.length; i++){
+        for(i = 0;  i < type.length; i++){            
+            cnt  = 0;
             switch(type[i].toUpperCase()){
                 case 'M':
                     if (type[i] == "M") hint = ["x", "y"];
@@ -144,31 +141,27 @@ function FormatCode(Info, Code){
                     break;
                 default:
                     Flag = false;
-                    FormattedCode += "<span class=\"error\">"+type[i]+text[i].join("")+"</span>";
-                    console.log(333);
-                    console.log(FormattedCode);
                     break;
             }
             if (Flag){
+                cnt++;
                 FormattedCode += type[i];
-                cnt  = 0;
                 plen = params[i].length;
                 tlen = text[i].length;
-                for (j = 0; j < hint.length; j++){
-                    if (j < plen){        
+                hlen = hint.length;
+                for (j = 0; j < hlen; j++){
+                    if ((j < plen) && Flag){        
                         while (true){
                             if ((text[i][cnt] == " ") || (text[i][cnt] == ",") || (text[i][cnt] == "/n")){
                                 FormattedCode += text[i][cnt];
                                 cnt++;
-                                console.log(444);
-                                console.log(FormattedCode);
                             }
                             if (text[i][cnt] == params[i][j]){
                                 if (isNaN(text[i][cnt])){
-                                    FormattedCode += "<span class=\"error\">"+text[i][cnt]+"</span>";
                                     Flag  = false;
-                                    console.log(555);
-                                    console.log(FormattedCode);
+                                    tmp += text[i][cnt];
+                                    plen = j;
+                                    j--;
                                 }
                                 else{
                                     FormattedCode += text[i][cnt];
@@ -188,8 +181,6 @@ function FormatCode(Info, Code){
                                     }
                                     x.push(x0);
                                     y.push(y0);
-                                    console.log(666);
-                                    console.log(FormattedCode);
                                 }
                                 cnt++;
                                 break;
@@ -197,38 +188,44 @@ function FormatCode(Info, Code){
                         }                        
                     }
                     else{
-                        if (j == plen){                           
+                        if (Flag){
                             FormattedCode += text[i].slice(cnt,tlen).join("");
                             cnt = tlen;
-                            console.log(777);
-                            console.log(FormattedCode);
+                        }
+                        else{
+                            if (j == plen){
+                                tmp += text[i].slice(cnt,tlen).join("");
+                                for (i++; i < type.length; i++){
+                                    tmp += text[i].join("");
+                                }
+                                FormattedCode += "<span class=\"error\">"+tmp+"</span>";
+                            }
                         }
                         FormattedCode += "<span class=\"space\"> </span>"+"<span class=\"hint\">"+hint[j]+"</span>";
                         Flag  = false;
-                        console.log(888);
-                        console.log(FormattedCode);
                     }
                 }
-                if (plen == hint.length) {
-                    FormattedCode += text[i].slice(cnt,tlen).join("");
-                    console.log(999);
-                    console.log(FormattedCode);
+                if (Flag){
+                    if (plen == hlen){
+                        FormattedCode += text[i].slice(cnt,tlen).join("");
+                    }
+                    else{
+                        tmp += text[i].slice(cnt,tlen).join("");
+                        for (i++; i < type.length; i++){
+                            tmp += text[i].join("");
+                        }
+                        FormattedCode += "<span class=\"error\">"+tmp+"</span>";
+                    }
                 }
-                else{
-                    FormattedCode += "<span class=\"error\">"+text[i].slice(cnt,tlen).join("")+"</span>";
-                    console.log(000);
-                    console.log(FormattedCode);
+            }
+            else{
+                for (i++; i < type.length; i++){
+                    tmp += text[i].join("");
                 }
-                if (j < plen){
-                    Flag = false;
-                    console.log("zzz");
-                    console.log(FormattedCode);
-                }
+                FormattedCode += "<span class=\"error\">"+tmp+"</span>";
             }
         }
     }
-    console.log("lalalalalalal");
-
     if (Flag){
         return {FormattedCode:FormattedCode, Coor:{x, y}};
     }
