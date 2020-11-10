@@ -11,7 +11,6 @@ function getCaretCharacterOffsetWithin(element) {
             preCaretRange.selectNodeContents(element);
             preCaretRange.setEnd(range.endContainer, range.endOffset);
             caretOffset = preCaretRange.toString().length;
-            console.log(preCaretRange.toString().split(''));
         }
     } else if ((sel = doc.selection) && sel.type != "Control") {
         var textRange = sel.createRange();
@@ -61,126 +60,179 @@ function setCaretPosition(element, offset) {
 function ExtractInfo(Code){
     var i, command, tmp;
     var type   = [];
-    var len    = [];
+    var text   = [];
     var params = [];
     command = Code.match(/([A-Z])([^A-Z]*)/gi);
     if (command != null){
         for (i = 0; i < command.length; i++){
             type.push(command[i][0]);
-            tmp = command[i].substring(1,command[i].length).trim().split(/(?:,| )+/);
-            len.push(tmp.length);
-            params = params.concat(tmp);
-            //console.log(type); 
+            tmp = command[i].substring(1,command[i].length).split(/([ , \n])/);
+            tmp = tmp.filter(val => val !== ""); 
+            text.push([]);
+            text[i] =text[i].concat(tmp);
+            tmp = command[i].substring(1,command[i].length).split(/[ , \n]/);
+            tmp = tmp.filter(val => val !== "");                       
+            params.push([]);
+            params[i] = params[i].concat(tmp);
         }
     }
-    return{type, len, params};
+    return{type, text, params};
 }
-function FormatCode(Info, Code){
+function FormatCode(Info, Code){    
+    console.log(Code);
     var type   = Info.type;
-    var len    = Info.len;
+    var text   = Info.text;
     var params = Info.params;
-    var FormattedCode = Code;
-    var i, j, x, y, Flag=true;
+    var FormattedCode = "";
+    var i, j, cnt, hint, plen, tlen;
+    var x0 = 0;
+    var y0 = 0;
+    var x = [];
+    var y = [];
+    var Flag=true;
     if (type.length==0){
-        FormattedCode = "<span style=\"background-color:red;\">"+Code+"</span>";        
-        //FormattedCode = Code;
+        FormattedCode = "<span class=\"error\">"+Code+"</span>";
+        console.log(111);
+        console.log(FormattedCode);
     }
-    else if (type[0].toUpperCase()!='M'){        
-        FormattedCode = "<span style=\"background-color:red;\">"+Code+"</span>";
-        //FormattedCode = Code;
+    else if (Code.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ' ')[0].toUpperCase()!='M'){        
+        FormattedCode = "<span class=\"error\">"+Code+"</span>";
+        console.log(222);
+        console.log(FormattedCode);
     }
     else{
         for(i = 0;  i < type.length; i++){
             switch(type[i].toUpperCase()){
                 case 'M':
-                    if (len[i] != 2){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "M") hint = ["x", "y"];
+                    else                hint = ["dx", "dy"];
                     break;
                 case 'L':
-                    if (len[i] != 2){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "L") hint = ["x", "y"];
+                    else                hint = ["dx", "dy"];
                     break;
                 case 'H':
-                    if (len[i] != 1){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "H") hint = ["x"];
+                    else                hint = ["dx"];
                     break;
                 case 'V':
-                    if (len[i] != 1){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "V") hint = ["y"];
+                    else                hint = ["dy"];
                     break;
-                case 'C':
-                    if (len[i] != 6){
-
-                    }
-                    else{
-
-                    }
+                case 'C':                    
+                    if (type[i] == "C") hint = ["x1", "y1", "x2", "y2", "x", "y"];
+                    else                hint = ["dx1", "dy1", "dx2", "dy2", "dx", "dy"];
                     break;
-                case 'S':
-                    if (len[i] != 4){
-
-                    }
-                    else{
-
-                    }
+                case 'S':                    
+                    if (type[i] == "S") hint = ["x2", "y2", "x", "y"];
+                    else                hint = ["dx2", "dy2", "dx", "dy"];
                     break;
-                case 'Q':
-                    if (len[i] != 4){
-
-                    }
-                    else{
-
-                    }
+                case 'Q':                    
+                    if (type[i] == "Q") hint = ["x1", "y1", "x", "y"];
+                    else                hint = ["dx1", "dy1", "dx", "dy"];
                     break;
                 case 'T':
-                    if (len[i] != 2){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "T") hint = ["x", "y"];
+                    else                hint = ["dx", "dy"];
                     break;
                 case 'A':
-                    if (len[i] != 7){
-
-                    }
-                    else{
-
-                    }
+                    if (type[i] == "T") hint = ["rx", "ry", "angle", "large-arc-flag", "sweep-flag", "x", "y"];
+                    else                hint = ["rx", "ry", "angle", "large-arc-flag", "sweep-flag", "dx", "dy"];
                     break;
                 case 'Z':
-                    if (len[i] != 0){
-
-                    }
-                    else{
-
-                    }
+                    hint = [];
                     break;
                 default:
+                    Flag = false;
+                    FormattedCode += "<span class=\"error\">"+type[i]+text[i].join("")+"</span>";
+                    console.log(333);
+                    console.log(FormattedCode);
                     break;
+            }
+            if (Flag){
+                FormattedCode += type[i];
+                cnt  = 0;
+                plen = params[i].length;
+                tlen = text[i].length;
+                for (j = 0; j < hint.length; j++){
+                    if (j < plen){        
+                        while (true){
+                            if ((text[i][cnt] == " ") || (text[i][cnt] == ",") || (text[i][cnt] == "/n")){
+                                FormattedCode += text[i][cnt];
+                                cnt++;
+                                console.log(444);
+                                console.log(FormattedCode);
+                            }
+                            if (text[i][cnt] == params[i][j]){
+                                if (isNaN(text[i][cnt])){
+                                    FormattedCode += "<span class=\"error\">"+text[i][cnt]+"</span>";
+                                    Flag  = false;
+                                    console.log(555);
+                                    console.log(FormattedCode);
+                                }
+                                else{
+                                    FormattedCode += text[i][cnt];
+                                    switch (hint[j]){
+                                        case "x":
+                                            x0 = parseFloat(params[i][j]);
+                                            break;
+                                        case "y":
+                                            y0 = parseFloat(params[i][j]);
+                                            break;
+                                        case "dx":
+                                            x0 += parseFloat(params[i][j]);
+                                            break;
+                                        case "dy":
+                                            y0 += parseFloat(params[i][j]);
+                                            break;
+                                    }
+                                    x.push(x0);
+                                    y.push(y0);
+                                    console.log(666);
+                                    console.log(FormattedCode);
+                                }
+                                cnt++;
+                                break;
+                            }
+                        }                        
+                    }
+                    else{
+                        if (j == plen){                           
+                            FormattedCode += text[i].slice(cnt,tlen).join("");
+                            cnt = tlen;
+                            console.log(777);
+                            console.log(FormattedCode);
+                        }
+                        FormattedCode += "<span class=\"space\"> </span>"+"<span class=\"hint\">"+hint[j]+"</span>";
+                        Flag  = false;
+                        console.log(888);
+                        console.log(FormattedCode);
+                    }
+                }
+                if (plen == hint.length) {
+                    FormattedCode += text[i].slice(cnt,tlen).join("");
+                    console.log(999);
+                    console.log(FormattedCode);
+                }
+                else{
+                    FormattedCode += "<span class=\"error\">"+text[i].slice(cnt,tlen).join("")+"</span>";
+                    console.log(000);
+                    console.log(FormattedCode);
+                }
+                if (j < plen){
+                    Flag = false;
+                    console.log("zzz");
+                    console.log(FormattedCode);
+                }
             }
         }
     }
+    console.log("lalalalalalal");
+
     if (Flag){
-        return {FormattedCode, Coor:{x, y}};
+        return {FormattedCode:FormattedCode, Coor:{x, y}};
     }
     else{
-        return {FormattedCode, Coor:null};
+        return {FormattedCode:FormattedCode, Coor:null};
     }
 }
