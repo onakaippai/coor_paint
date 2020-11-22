@@ -61,7 +61,7 @@ li {
 	margin: 0;
 	padding: 0.05rem 0 0 0;
 	cursor: default;
-	border-color: white;
+    border-color: white;
 	border-style: solid;
 	border-width: 2px 1px 2px 1px;
 }
@@ -94,6 +94,19 @@ pre {
 	overflow-y: scroll;
 }
 
+span.space{
+    background-color:white;
+}
+
+span.hint{
+    background-color:skyblue;
+}
+
+span.error{
+    background-color:red;
+}
+
+
 p {
 	width: 100%;
 	margin: 0;
@@ -103,12 +116,6 @@ p {
 	height: 480px;
 }
 
-canvas {
-	margin-top: 40;
-	margin-left: auto;
-	margin-right: auto;
-	border: 1px solid #d3d3d3;
-}
 
 svg {
 	margin-left: auto;

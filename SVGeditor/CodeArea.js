@@ -66,9 +66,10 @@ function ExtractInfo(Code){
     if (command != null){
         for (i = 0; i < command.length; i++){
             type.push(command[i][0]);
-            tmp = command[i].split(/([ , \n])/);
+            tmp = command[i].substring(1,command[i].length).split(/([ , \n])/);
             tmp = tmp.filter(val => val !== ""); 
             text.push([]);
+            text[i].push(type[i]);
             text[i] =text[i].concat(tmp);
             tmp = command[i].substring(1,command[i].length).split(/[ , \n]/);
             tmp = tmp.filter(val => val !== "");                       
@@ -168,19 +169,21 @@ function FormatCode(Info, Code){
                                     switch (hint[j]){
                                         case "x":
                                             x0 = parseFloat(params[i][j]);
+                                            x.push(x0);
                                             break;
                                         case "y":
                                             y0 = parseFloat(params[i][j]);
+                                            y.push(y0);
                                             break;
                                         case "dx":
                                             x0 += parseFloat(params[i][j]);
+                                            x.push(x0);
                                             break;
                                         case "dy":
                                             y0 += parseFloat(params[i][j]);
+                                            y.push(y0);
                                             break;
                                     }
-                                    x.push(x0);
-                                    y.push(y0);
                                 }
                                 cnt++;
                                 break;
@@ -215,6 +218,7 @@ function FormatCode(Info, Code){
                             tmp += text[i].join("");
                         }
                         FormattedCode += "<span class=\"error\">"+tmp+"</span>";
+                        Flag  = false;
                     }
                 }
             }
@@ -232,4 +236,18 @@ function FormatCode(Info, Code){
     else{
         return {FormattedCode:FormattedCode, Coor:null};
     }
+}
+function PressEnter(e){
+    if (e.keyCode == 13 && e.shiftKey==false) {
+        e.preventDefault(); 
+        document.execCommand("insertLineBreak");    
+    } 
+}
+function CopyPaste(e){
+    // cancel paste
+    e.preventDefault();
+    // get text representation of clipboard
+    var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    // insert text manually
+    document.execCommand("insertHTML", false, text);
 }
