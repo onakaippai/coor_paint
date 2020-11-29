@@ -1,7 +1,8 @@
 var CdeTabObj, GrfTabObj;
 var CurPthObj, TtlCdeObj;
 var CurSvgObj, TtlSvgObj;
-var Coor, Info, Code, DrewCur, DrewTtl;
+var Coor00Obj, CoorBoxObj;
+var Coor, Info, Code, DrewCur, DrewTtl, Over;
 function CdeTabClk(TabBnt, CdeEdt){
 	CdeTabObj.children[0].style.borderTopColor = "White";
 	CdeTabObj.children[0].style.borderBottomColor = "White";
@@ -20,9 +21,13 @@ function GrfTabClk(TabBnt, GrfVwr){
 	GrfTabObj.children[3].style.borderBottomColor = "White";
 	CurSvgObj.style.display = "none";
 	TtlSvgObj.style.display = "none";
+	CoorBoxObj.style.display = "none";
 	TabBnt.style.borderTopColor = "Grey";
 	TabBnt.style.borderBottomColor = "Gainsboro";
 	GrfVwr.style.display = "block";
+    if (TtlSvgObj.style.display == "none"){
+        CoorBoxObj.style.display = "block";
+    }
 }
 function DrawClk(){
     if (CurPthObj.style.display == "block"){
@@ -110,12 +115,14 @@ function CurPthChange(){
     DrewCur = false;
 }
 function PreLoad(){
-	CdeTabObj = document.getElementById("CdeTab");
-	GrfTabObj = document.getElementById("GrfTab");
-	CurPthObj = document.getElementById("CurPth");
-	TtlCdeObj = document.getElementById("TtlCde");
-	CurSvgObj = document.getElementById("CurSvg");
-	TtlSvgObj = document.getElementById("TtlSvg");
+	CdeTabObj  = document.getElementById("CdeTab");
+	GrfTabObj  = document.getElementById("GrfTab");
+	CurPthObj  = document.getElementById("CurPth");
+	TtlCdeObj  = document.getElementById("TtlCde");
+	CurSvgObj  = document.getElementById("CurSvg");
+	TtlSvgObj  = document.getElementById("TtlSvg");
+    Coor00Obj  = document.getElementById("Coor00");
+    CoorBoxObj = document.getElementById("CoorBox");
 	CdeTabObj.children[0].addEventListener("click", function(){
 		CdeTabClk(CdeTabObj.children[0], CurPthObj);
 	}, false);

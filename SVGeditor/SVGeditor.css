@@ -108,6 +108,7 @@ span.error{
 
 
 p {
+    position: relative;
 	width: 100%;
 	margin: 0;
 	text-align: center;
@@ -116,6 +117,14 @@ p {
 	height: 480px;
 }
 
+a { 
+    position: absolute;
+    z-index: 3;
+    background-color: black;
+    color:red;
+	font-size: 0.75rem;
+    opacity: 0.5;
+}
 
 svg {
 	margin-left: auto;

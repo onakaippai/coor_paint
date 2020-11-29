@@ -32,7 +32,30 @@ function GetPointCode(Coor, OrgW, W){
     for (i = 0; i < Coor.x.length; i++){
         x = Coor.x[i]*Zoom;
         y = Coor.y[i]*Zoom;
-        Code += "<circle cx=\""+x+"\" cy=\""+y+"\" r=\"3\" fill=\"red\" />"
+        Code += "<circle cx=\""+x+"\" cy=\""+y+"\" r=\"3\" fill=\"red\" onmouseover=\"showText(this.getBoundingClientRect(), "+Coor.x[i]+","+Coor.y[i]+")\" ondblclick=\"copyText("+Coor.x[i]+","+Coor.y[i]+")\" onmouseout=\"clText()\"/>";
     }
+    Over = true;
     return Code;
+}
+function showText(el, x, y){
+    if (Over){
+        CoorBoxObj.style.padding = '5px';
+        CoorBoxObj.style.left = (el.left - Coor00Obj.getBoundingClientRect().left + 5) + 'px';
+        CoorBoxObj.style.top  = (el.top - Coor00Obj.getBoundingClientRect().top + 5) + 'px';
+        CoorBoxObj.innerHTML  = "("+x+","+y+")";
+        Over = false;
+    }
+}
+function copyText(x, y){
+    const elem = document.createElement('textarea');
+    elem.value = x+" "+y;
+    document.body.appendChild(elem);
+    elem.select();
+    document.execCommand('copy');
+    document.body.removeChild(elem);
+}
+function clText(){
+    CoorBoxObj.style.padding = '0px';
+    CoorBoxObj.innerHTML     = "";
+    Over = true;
 }
